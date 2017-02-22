@@ -1,0 +1,58 @@
+@charset "iso-8859-1";
+/* CSS Document */
+
+body{
+/*overflow:hidden;	
+*/}
+
+#barRodape{
+	background-color:#e2e2e2;
+	position:absolute;
+	bottom:0px;
+	left:0px;
+	right:0px;
+	z-index:0;
+	clear: both;
+}
+
+#barRodape ul{
+	margin: 30px 0 30px 0;
+	padding: 0 0;
+	text-align:center;
+}
+
+
+#barRodape ul li{
+	margin: 0 0;
+	padding: 5px 10px 0px 10px;
+	display:inline-block;	
+	text-align:center;
+}
+
+#barRodape ul li a{
+	width:100px;
+	height:75px;
+}
+
+#barRodape ul li .fa{
+	color:#838f9a;
+	font-size:36px;
+}
+
+#list{
+	overflow:auto;
+	height:250px;
+}
+
+#forms{
+	margin-top:100px;
+}
+
+.botao{
+    padding-top: 16px;
+}
+
+.list tr:hover{
+	background:#0F0;
+	color:#FFF;
+}

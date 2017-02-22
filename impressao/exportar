@@ -1,0 +1,112 @@
+<?php
+
+include ( "../system/defines.php" );
+
+function __autoload( $class ){
+	$file = "../system/". $class .".php";
+	if( file_exists( $file ) ){
+		include( $file );
+	}else{
+		include("../functions/". $class .".php");
+	}
+}
+
+	include("exportarDados.php");
+	
+	$nome = $_GET['nome'];
+	$user = new sql('usu');
+	$sql = $user->selectTable( ALL, "{$user->data('nome')}='$nome'" );
+	
+		while( $alunoCampo = mysql_fetch_array( $sql ) ){
+			
+
+				
+				$folder3x4	= "3x4/";
+				
+				$imagem = new carteirinha;
+				$imagem->codForm( $alunoCampo['usu_cod_form'] );
+				$imagem->endereco( $alunoCampo['usu_endereco'] . " - " .  $alunoCampo['usu_end_num'] );
+				
+					$sqlescolaid = mysql_query("SELECT * FROM ent where ent_cod=". $alunoCampo["usu_ent_id"] ."");
+					$alunoCampoescolaid = mysql_fetch_assoc( $sqlescolaid );
+						$folderDados = "dados/".$alunoCampoescolaid["ent_nome"];
+					
+				$imagem->escola( $alunoCampoescolaid["ent_nome"] );
+				$imagem->nascimento( $alunoCampo['usu_dt_nascto'] );
+				
+				if( strlen( $alunoCampo['usu_nome'] ) > 37 ){
+					$imagem->nome( $alunoCampo['usu_abreviatura_carteira'] );
+				}else{
+					$imagem->nome( $alunoCampo['usu_nome'] );
+				}
+				
+				$imagem->responsavel( $alunoCampo['usu_resp_nome'] );
+				$imagem->serie( $alunoCampo['usu_serie'] );
+				$imagem->turno( $alunoCampo['usu_turno'] );
+				$imagem->folder( $folderDados );
+				$imagem->tiragem( $alunoCampo['usu_tiragem']);
+				// $imagem->imprime();
+			
+					
+					$foto = imagecreatefromjpeg( $folder3x4 ."/". $alunoCampo['usu_cod_form'] . ".jpg");
+					$imagem = imagecreatefromjpeg( $folderDados ."/". $alunoCampo['usu_cod_form'] . ".jpg");
+					
+					
+					$widthCarteira = 268;
+					$heigthCarteira = 326;
+			
+					$marginWidth = 48;
+					$marginHeigth = 245;
+					
+					$widthFoto = imagesx( $foto );
+					$heigthFoto = imagesy( $foto );
+					
+					$widthMesc = ($widthFoto - $widthCarteira) / 2;
+					
+					$background = imagecolorallocate( $imagem, 255, 255, 255 );
+					$backgroundfoto = imagecolorallocate( $foto, 255, 255, 255 );
+					$cor = imagecolorallocate( $imagem, 255, 255, 255 );
+
+					$retangulo = imagecolorallocate( $imagem, 0, 0, 0 );
+					imagerectangle( $imagem, 10, 10, 10, 10, $retangulo );
+					
+					imagecopy( $imagem, $foto, $marginWidth, $marginHeigth, $widthMesc, 0, 268, 326);
+					
+					
+					$caminho = "exportados/".$alunoCampo["usu_protocolo"]."/";
+					echo $caminho;
+					
+					if (!@dir($caminho)){
+						mkdir($caminho);
+						chmod($caminho, 0777);						
+					} else {
+						chmod($caminho, 0777);
+					}
+					
+					//@imagejpeg( $imagem, $caminho .$alunoCampo["usu_cod_form"] . ".jpg", 100 );
+					@imagejpeg( $imagem );
+					imagedestroy( $foto );
+					imagedestroy( $imagem );
+					
+					
+					#################################################################################
+					
+					
+//					$foto1 = imagecreatefromjpeg( $folder3x4 ."/". $alunoCampo['usu_cod_form'] . ".jpg");
+//					$imagem2 = imagecreatefromjpeg( "molde.jpg");
+//			
+//					
+//					
+//					imagecopy( $imagem2, $foto1, $marginWidth, $marginHeigth, $widthMesc, 0, 268, 326);
+//					
+//					@imagejpeg( $imagem2, "imagem/". $alunoCampo["usu_cod_form"] . ".jpg", 100 );
+//					imagedestroy( $foto1 );
+//					imagedestroy( $imagem2 );					
+				
+
+		}
+		
+		( !empty( $_GET['id'] ) )? $id = "?id=".$_GET['id'] : $id = false;
+	
+		// header("location:../".$_GET['pagina'].".php".$id);
+	
